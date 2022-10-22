@@ -5,9 +5,16 @@ import '../functions/other_functions.dart';
 import '../widgets/item_box.dart';
 import './basket_screen.dart';
 
-class CategoryItemScreen extends StatelessWidget {
+class CategoryItemScreen extends StatefulWidget {
   static const routeName = "/category-items";
   const CategoryItemScreen({super.key});
+
+  @override
+  State<CategoryItemScreen> createState() => _CategoryItemScreenState();
+}
+
+class _CategoryItemScreenState extends State<CategoryItemScreen> {
+  bool visible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +38,13 @@ class CategoryItemScreen extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(BasketScreen.routeName);
+                Navigator.of(context)
+                    .pushNamed(BasketScreen.routeName)
+                    .then((value) {
+                  setState(() {
+                    visible = true;
+                  });
+                });
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
@@ -46,23 +59,46 @@ class CategoryItemScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: StreamBuilder(
-        stream: OtherFunctions.getItems(category.name),
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          }
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              return ItemBox(
-                item: snapshot.data[index],
-              );
-            },
-            itemCount: snapshot.data.length,
-          );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            visible = false;
+          });
         },
+        displacement: 10,
+        triggerMode: RefreshIndicatorTriggerMode.anywhere,
+        child: Column(
+          children: [
+            if (visible)
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Some data changed since the last time you visited this page.\nPull to refresh!.",
+                  textScaleFactor: 1,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            StreamBuilder(
+              stream: OtherFunctions.getItems(category.name),
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                }
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return ItemBox(
+                      item: snapshot.data[index],
+                    );
+                  },
+                  itemCount: snapshot.data.length,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

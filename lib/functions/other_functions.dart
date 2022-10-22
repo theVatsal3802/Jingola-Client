@@ -145,4 +145,25 @@ class OtherFunctions {
       },
     );
   }
+
+  static Future<List<Map<String, dynamic>>> getItemsfromItemName(
+      String userId) async {
+    final doc =
+        await FirebaseFirestore.instance.collection("users").doc(userId).get();
+    final basket = doc.data();
+    final Map<String, dynamic> basketItems = basket!["basket"]["basketItems"];
+    List<Map<String, dynamic>> items = [];
+    List<String> keys = basketItems.keys.toList();
+    for (var name in keys) {
+      final item = await FirebaseFirestore.instance
+          .collection("menu")
+          .where(
+            "name",
+            isEqualTo: name,
+          )
+          .get();
+      items.add(item.docs.first.data());
+    }
+    return items;
+  }
 }

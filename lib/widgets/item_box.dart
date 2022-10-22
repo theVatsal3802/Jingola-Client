@@ -60,12 +60,6 @@ class _ItemBoxState extends State<ItemBox> {
                 );
               },
             ),
-          ).then(
-            (_) {
-              if (mounted) {
-                setItemQuantity();
-              }
-            },
           );
         },
         contentPadding: const EdgeInsets.only(

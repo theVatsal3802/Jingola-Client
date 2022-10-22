@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../functions/other_functions.dart';
+import '../widgets/basket_item_tile.dart';
 
 class BasketScreen extends StatelessWidget {
   static const routeName = "/basket";
-  const BasketScreen({super.key});
+  BasketScreen({super.key});
+
+  final User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -41,22 +48,205 @@ class BasketScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              // ListView.builder(
-              //   shrinkWrap: true,
-              //   physics: const NeverScrollableScrollPhysics(),
-              //   itemBuilder: (context, index) {
-              //     List<Item> items = const Basket().basketItems;
-              //     print(items);
-              //     return ItemBox(item: items[index]);
-              //   },
-              //   itemCount: const Basket().basketItems.length,
-              // )
+            children: [
+              Text(
+                "Basket Items",
+                textScaleFactor: 1,
+                style: Theme.of(context).textTheme.headline3!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(user!.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+                  return FutureBuilder(
+                    future: OtherFunctions.getItemsfromItemName(user!.uid),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return BasketItemTile(item: snapshot.data![index]);
+                        },
+                        itemCount: snapshot.data!.length,
+                      );
+                    },
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Total",
+                textScaleFactor: 1,
+                style: Theme.of(context).textTheme.headline3!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(user!.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        height: 200,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      );
+                    }
+                    return Container(
+                      height: 200,
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Subtotal",
+                                    textScaleFactor: 1,
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                  FutureBuilder(
+                                    future: getSubtotal(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const CircularProgressIndicator
+                                            .adaptive();
+                                      }
+                                      return Text(
+                                        "₹${snapshot.data!.toStringAsFixed(2)}",
+                                        textScaleFactor: 1,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Delivery fee",
+                                    textScaleFactor: 1,
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                  Text(
+                                    "₹20",
+                                    textScaleFactor: 1,
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Total",
+                                    textScaleFactor: 1,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                  ),
+                                  FutureBuilder(
+                                    future: getTotal(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const CircularProgressIndicator
+                                            .adaptive();
+                                      }
+                                      return Text(
+                                        "₹${snapshot.data!.toStringAsFixed(2)}",
+                                        textScaleFactor: 1,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+Future<double> getSubtotal() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  final basket =
+      await FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
+  double subtotal = double.parse(basket["basket"]["subtotal"]);
+  return subtotal;
+}
+
+Future<double> getTotal() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  final basket =
+      await FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
+  double subtotal = double.parse(basket["basket"]["subtotal"]);
+  return subtotal + 20;
 }
