@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "890261110671",
+    "project_id": "jingola-india-d5379",
+    "storage_bucket": "jingola-india-d5379.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890261110671:android:395600ee87d6a4d09115fa",
+        "android_client_info": {
+          "package_name": "com.example.jingola"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890261110671-nv3po55kkubk8v7istommoba4njs21gu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJqInxx3rhUrTJWwwSn3agNpxWeTGJLFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890261110671-nv3po55kkubk8v7istommoba4njs21gu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890261110671:android:c9b0605bfb033c3c9115fa",
+        "android_client_info": {
+          "package_name": "com.example.jingola_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890261110671-7t6l1mqipp00q5inb3fq71egh06g10pe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jingola_client",
+            "certificate_hash": "d6c089895892aec58a3c91e7f92d0897f2c1957b"
+          }
+        },
+        {
+          "client_id": "890261110671-nv3po55kkubk8v7istommoba4njs21gu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJqInxx3rhUrTJWwwSn3agNpxWeTGJLFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890261110671-nv3po55kkubk8v7istommoba4njs21gu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
