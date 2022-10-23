@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../models/category_model.dart';
 import '../models/item_model.dart';
@@ -212,5 +215,71 @@ class OtherFunctions {
         .get();
     double subtotal = double.parse(basket["basket"]["subtotal"]);
     return subtotal + 20;
+  }
+
+  static Future<List<dynamic>> getCheckOutDetails() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    double total = await getTotal();
+    final doc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get();
+    final userData = doc.data();
+    final Map<String, dynamic> basket = userData!["basket"];
+    final items = basket.values;
+    final baskets = items.first as Map<String, dynamic>;
+    final basketItems = List.from(baskets.keys);
+    final itemQuantity = List.from(baskets.values);
+    return [
+      total.toStringAsFixed(2),
+      basketItems,
+      itemQuantity,
+      basket["subtotal"],
+      basketItems.length,
+      "₹20.00",
+    ];
+  }
+
+  static Future<String> determinePosition() async {
+    String address = "";
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Fluttertoast.showToast(
+        msg: "Please turn on Location Service",
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        Fluttertoast.showToast(
+          msg: "Unable to determine address",
+          toastLength: Toast.LENGTH_LONG,
+        );
+      }
+    }
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+    );
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      Placemark place = placemarks[0];
+      address =
+          "${place.name}, ${place.street}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea}, ${place.country} - ${place.postalCode}";
+    } catch (_) {
+      Fluttertoast.showToast(
+        msg: "Unable to determine address",
+        toastLength: Toast.LENGTH_LONG,
+      );
+    }
+    return address;
   }
 }

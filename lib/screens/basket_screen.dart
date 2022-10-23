@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jingola_client/screens/checkout_screen.dart';
 
 import '../functions/other_functions.dart';
 import '../widgets/basket_item_tile.dart';
@@ -31,7 +32,24 @@ class BasketScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                await OtherFunctions.getTotal().then(
+                  (value) {
+                    if (value >= 150) {
+                      Navigator.of(context).pushNamed(CheckoutScreen.routeName);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Minimum total value must be ₹150.",
+                            textScaleFactor: 1,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                );
+              },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 30,
@@ -106,21 +124,12 @@ class BasketScreen extends StatelessWidget {
                 height: 10,
               ),
               StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(user!.uid)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Container(
-                        height: 200,
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                        ),
-                      );
-                    }
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(user!.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return Container(
                       height: 200,
                       padding: const EdgeInsets.all(5),
@@ -128,107 +137,109 @@ class BasketScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.white,
                       ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Subtotal",
-                                    textScaleFactor: 1,
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                  FutureBuilder(
-                                    future: OtherFunctions.getSubtotal(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const CircularProgressIndicator
-                                            .adaptive();
-                                      }
-                                      return Text(
-                                        "₹${snapshot.data!.toStringAsFixed(2)}",
-                                        textScaleFactor: 1,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Delivery fee",
-                                    textScaleFactor: 1,
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                  Text(
-                                    "₹20",
-                                    textScaleFactor: 1,
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Total",
-                                    textScaleFactor: 1,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5!
-                                        .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
-                                  ),
-                                  FutureBuilder(
-                                    future: OtherFunctions.getTotal(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const CircularProgressIndicator
-                                            .adaptive();
-                                      }
-                                      return Text(
-                                        "₹${snapshot.data!.toStringAsFixed(2)}",
-                                        textScaleFactor: 1,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     );
-                  }),
+                  }
+                  return Container(
+                    height: 200,
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Subtotal",
+                                  textScaleFactor: 1,
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                                FutureBuilder(
+                                  future: OtherFunctions.getSubtotal(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const CircularProgressIndicator
+                                          .adaptive();
+                                    }
+                                    return Text(
+                                      "₹${snapshot.data!.toStringAsFixed(2)}",
+                                      textScaleFactor: 1,
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Delivery fee",
+                                  textScaleFactor: 1,
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                                Text(
+                                  "₹20",
+                                  textScaleFactor: 1,
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Total",
+                                  textScaleFactor: 1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                ),
+                                FutureBuilder(
+                                  future: OtherFunctions.getTotal(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const CircularProgressIndicator
+                                          .adaptive();
+                                    }
+                                    return Text(
+                                      "₹${snapshot.data!.toStringAsFixed(2)}",
+                                      textScaleFactor: 1,
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
