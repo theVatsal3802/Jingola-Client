@@ -144,7 +144,7 @@ class BasketScreen extends StatelessWidget {
                                         Theme.of(context).textTheme.headline5,
                                   ),
                                   FutureBuilder(
-                                    future: getSubtotal(),
+                                    future: OtherFunctions.getSubtotal(),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
@@ -203,7 +203,7 @@ class BasketScreen extends StatelessWidget {
                                         ),
                                   ),
                                   FutureBuilder(
-                                    future: getTotal(),
+                                    future: OtherFunctions.getTotal(),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
@@ -233,20 +233,4 @@ class BasketScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<double> getSubtotal() async {
-  User? user = FirebaseAuth.instance.currentUser;
-  final basket =
-      await FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
-  double subtotal = double.parse(basket["basket"]["subtotal"]);
-  return subtotal;
-}
-
-Future<double> getTotal() async {
-  User? user = FirebaseAuth.instance.currentUser;
-  final basket =
-      await FirebaseFirestore.instance.collection("users").doc(user!.uid).get();
-  double subtotal = double.parse(basket["basket"]["subtotal"]);
-  return subtotal + 20;
 }

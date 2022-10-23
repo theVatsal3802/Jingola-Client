@@ -17,6 +17,7 @@ class AuthScreen extends StatelessWidget {
     return user != null
         ? const HomeScreen()
         : Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.background,
             body: SizedBox(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,

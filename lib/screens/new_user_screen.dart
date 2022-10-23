@@ -22,6 +22,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         title: Text(
           "Welcome",

@@ -46,6 +46,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       extendBody: false,
       bottomNavigationBar: BottomAppBar(
         child: Row(

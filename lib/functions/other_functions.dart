@@ -166,4 +166,24 @@ class OtherFunctions {
     }
     return items;
   }
+
+  static Future<double> getSubtotal() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    final basket = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get();
+    double subtotal = double.parse(basket["basket"]["subtotal"]);
+    return subtotal;
+  }
+
+  static Future<double> getTotal() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    final basket = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get();
+    double subtotal = double.parse(basket["basket"]["subtotal"]);
+    return subtotal + 20;
+  }
 }

@@ -75,6 +75,9 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> {
                 child: Text(
                   "Some data changed since the last time you visited this page.\nPull to refresh!.",
                   textScaleFactor: 1,
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
