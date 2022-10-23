@@ -6,6 +6,7 @@ import '../widgets/category_box.dart';
 import '../widgets/promo_box.dart';
 import '../models/voucher_model.dart';
 import '../widgets/custom_appbar.dart';
+import '../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = "/home";
@@ -15,7 +16,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(),
-      drawer: const Drawer(),
+      drawer: const CustomDrawer(),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
         child: Padding(

@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/auth_screen.dart';
-
 class CustomAppBar extends StatefulWidget with PreferredSizeWidget {
   const CustomAppBar({super.key});
 
@@ -44,21 +42,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
               color: Colors.white,
             ),
       ),
-      actions: [
-        IconButton(
-          onPressed: () async {
-            await FirebaseAuth.instance.signOut().then(
-                  (value) => Navigator.of(context).pushNamedAndRemoveUntil(
-                    AuthScreen.routeName,
-                    (route) => false,
-                  ),
-                );
-          },
-          icon: const Icon(
-            Icons.logout,
-          ),
-        ),
-      ],
     );
   }
 }

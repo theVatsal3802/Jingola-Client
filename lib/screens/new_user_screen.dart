@@ -109,6 +109,7 @@ class _NewUserScreenState extends State<NewUserScreen> {
                       if (!isLoading)
                         ElevatedButton(
                           onPressed: () async {
+                            FocusScope.of(context).unfocus();
                             setState(() {
                               isLoading = !isLoading;
                             });

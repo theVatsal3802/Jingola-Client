@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../functions/other_functions.dart';
 import '../widgets/basket_item_tile.dart';
+import '../widgets/custom_drawer.dart';
 
 class BasketScreen extends StatelessWidget {
   static const routeName = "/basket";
@@ -14,6 +15,7 @@ class BasketScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const CustomDrawer(),
       appBar: AppBar(
         title: Text(
           "Basket",

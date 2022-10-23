@@ -49,6 +49,22 @@ class OtherFunctions {
     );
   }
 
+  static Future<List> getOrders() async {
+    final pastOrders = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    pastOrders.get("pastOrders");
+    final List orders = pastOrders.get("pastOrders");
+    return orders;
+  }
+
+  static List<List> getItemFromMap(Map<String, dynamic> items) {
+    List a = List.from(items.keys);
+    List b = List.from(items.values);
+    return [a, b];
+  }
+
   static Future<void> saveUser({
     required String name,
     required String userId,
@@ -61,6 +77,17 @@ class OtherFunctions {
         "basket": {"basketItems": {}, "subtotal": "0"},
         "pastOrders": [],
         "vouchersUsed": [],
+      },
+    );
+  }
+
+  static Future<void> updateUser({
+    required String name,
+  }) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance.collection("users").doc(user!.uid).update(
+      {
+        "name": name,
       },
     );
   }
