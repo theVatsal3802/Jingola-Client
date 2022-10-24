@@ -15,6 +15,7 @@ import './screens/new_user_screen.dart';
 import './config/theme.dart';
 import './screens/contact_us_screen.dart';
 import './screens/my_account_screen.dart';
+import './screens/order_confirm_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         VoucherScreen.routeName: (context) => const VoucherScreen(),
         MyAccountScreen.routeName: (context) => const MyAccountScreen(),
         ContactUsScreen.routeName: (context) => const ContactUsScreen(),
+        OrderConfirmScreen.routeName: (context) => const OrderConfirmScreen(),
       },
     );
   }

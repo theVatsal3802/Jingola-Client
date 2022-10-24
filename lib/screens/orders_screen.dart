@@ -29,7 +29,7 @@ class OrdersScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Your past Orders",
+                "Your Orders",
                 textScaleFactor: 1,
                 style: Theme.of(context)
                     .textTheme

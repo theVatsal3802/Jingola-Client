@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../functions/other_functions.dart';
+import './order_confirm_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   static const routeName = "/checkout";
@@ -16,6 +17,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool isAddressSet = false;
   bool isConfirm = false;
+  bool loading = false;
 
   @override
   void initState() {
@@ -44,11 +46,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ElevatedButton(
               onPressed: () {
                 FocusScope.of(context).unfocus();
-                bool valid = _formKey.currentState!.validate();
-                if (!valid) {
+                if (!isConfirm) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Please confirm your delivery address",
+                        textScaleFactor: 1,
+                      ),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
                   return;
                 }
-                _formKey.currentState!.save();
+                Navigator.of(context).pushNamed(OrderConfirmScreen.routeName);
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
@@ -56,7 +66,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
               ),
               child: const Text(
-                "Proceed to Payment",
+                "Place Order",
                 textScaleFactor: 1,
               ),
             ),
@@ -159,12 +169,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Text(
                           "Total:",
                           textScaleFactor: 1,
-                          style: Theme.of(context).textTheme.headline4,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                         Text(
                           "₹${snapshot.data![0]}",
                           textScaleFactor: 1,
-                          style: Theme.of(context).textTheme.headline4,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                       ],
                     ),
@@ -225,12 +245,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        if (!isAddressSet)
+                        if (loading) const CircularProgressIndicator.adaptive(),
+                        if (!isAddressSet && !loading)
                           ElevatedButton(
                             onPressed: () async {
+                              setState(() {
+                                loading = true;
+                              });
                               await OtherFunctions.determinePosition().then(
                                 (value) {
                                   setState(() {
+                                    loading = false;
                                     locationController.text = value;
                                     isAddressSet = true;
                                   });
@@ -242,9 +267,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               textScaleFactor: 1,
                             ),
                           ),
-                        if (isAddressSet && !isConfirm)
+                        if (isAddressSet && !isConfirm && !loading)
                           ElevatedButton(
                             onPressed: () {
+                              FocusScope.of(context).unfocus();
+                              bool valid = _formKey.currentState!.validate();
+                              if (!valid) {
+                                return;
+                              }
+                              _formKey.currentState!.save();
                               setState(() {
                                 isConfirm = true;
                               });
@@ -254,7 +285,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               textScaleFactor: 1,
                             ),
                           ),
-                        if (isAddressSet && isConfirm)
+                        if (isAddressSet && isConfirm && !loading)
                           ElevatedButton(
                             onPressed: () {
                               setState(() {

@@ -282,4 +282,9 @@ class OtherFunctions {
     }
     return address;
   }
+
+  static Future<void> placeOrder() async {
+    // TODO: Add this functions to write to firbase
+    // TODO: Add voucher feature
+  }
 }
