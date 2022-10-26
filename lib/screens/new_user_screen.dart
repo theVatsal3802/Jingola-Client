@@ -20,6 +20,12 @@ class _NewUserScreenState extends State<NewUserScreen> {
   bool isLoading = false;
 
   @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -118,16 +124,19 @@ class _NewUserScreenState extends State<NewUserScreen> {
                               name: nameController.text.trim(),
                               userId: user!.uid,
                               phoneNumer: user.phoneNumber!,
-                            ).then((value) {
-                              setState(() {
-                                isLoading = !isLoading;
-                              });
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                HomeScreen.routeName,
-                                arguments: nameController.text.trim(),
-                                (route) => false,
-                              );
-                            });
+                              context: context,
+                            ).then(
+                              (value) {
+                                setState(() {
+                                  isLoading = !isLoading;
+                                });
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  HomeScreen.routeName,
+                                  arguments: nameController.text.trim(),
+                                  (route) => false,
+                                );
+                              },
+                            );
                           },
                           child: const Text(
                             "Save Name",

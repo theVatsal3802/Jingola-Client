@@ -73,7 +73,7 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> {
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
-                  "Some data changed since the last time you visited this page.\nPull to refresh!.",
+                  "Some data might have changed since the last time you visited this page.\nPull to refresh!.",
                   textScaleFactor: 1,
                   style: TextStyle(
                     fontSize: 14,
@@ -89,15 +89,25 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> {
                     child: CircularProgressIndicator.adaptive(),
                   );
                 }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return ItemBox(
-                      item: snapshot.data[index],
-                    );
-                  },
-                  itemCount: snapshot.data.length,
-                );
+                return snapshot.data.length == 0
+                    ? Center(
+                        child: Text(
+                          "No Menu Items available yet!",
+                          textScaleFactor: 1,
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return ItemBox(
+                            item: snapshot.data[index],
+                          );
+                        },
+                        itemCount: snapshot.data.length,
+                      );
               },
             ),
           ],

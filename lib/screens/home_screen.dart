@@ -71,20 +71,30 @@ class HomeScreen extends StatelessWidget {
                     return const Center(
                         child: CircularProgressIndicator.adaptive());
                   }
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemBuilder: (context, index) {
-                      return CategoryBox(
-                        category: snapshot.data[index],
-                      );
-                    },
-                    itemCount: snapshot.data.length,
-                  );
+                  return snapshot.data.length == 0
+                      ? Center(
+                          child: Text(
+                            "No Categories available yet!",
+                            textScaleFactor: 1,
+                            softWrap: true,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                        )
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                          ),
+                          itemBuilder: (context, index) {
+                            return CategoryBox(
+                              category: snapshot.data[index],
+                            );
+                          },
+                          itemCount: snapshot.data.length,
+                        );
                 },
               ),
             ],

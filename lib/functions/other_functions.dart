@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -52,16 +53,6 @@ class OtherFunctions {
     );
   }
 
-  static Future<List> getOrders() async {
-    final pastOrders = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    pastOrders.get("pastOrders");
-    final List orders = pastOrders.get("pastOrders");
-    return orders;
-  }
-
   static List<List> getItemFromMap(Map<String, dynamic> items) {
     List a = List.from(items.keys);
     List b = List.from(items.values);
@@ -72,27 +63,56 @@ class OtherFunctions {
     required String name,
     required String userId,
     required String phoneNumer,
+    required BuildContext context,
   }) async {
-    await FirebaseFirestore.instance.collection("users").doc(userId).set(
-      {
-        "name": name,
-        "phoneNumber": phoneNumer,
-        "basket": {"basketItems": {}, "subtotal": "0"},
-        "pastOrders": [],
-        "vouchersUsed": [],
-      },
-    );
+    try {
+      await FirebaseFirestore.instance.collection("users").doc(userId).set(
+        {
+          "name": name,
+          "phoneNumber": phoneNumer,
+          "basket": {"basketItems": {}, "subtotal": "0"},
+          "pastOrders": [],
+          "vouchersUsed": [],
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Something went wrong, please try again.",
+            textScaleFactor: 1,
+          ),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   static Future<void> updateUser({
     required String name,
+    required BuildContext context,
   }) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    await FirebaseFirestore.instance.collection("users").doc(user!.uid).update(
-      {
-        "name": name,
-      },
-    );
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user!.uid)
+          .update(
+        {
+          "name": name,
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Something went wrong, please try again.",
+            textScaleFactor: 1,
+          ),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   static Future<void> addToBasket({
@@ -213,8 +233,15 @@ class OtherFunctions {
         .collection("users")
         .doc(user!.uid)
         .get();
+    final fee = await FirebaseFirestore.instance
+        .collection("settings")
+        .doc("App Settings")
+        .get();
+    double fees = double.parse(
+      fee.get("delivery fees"),
+    );
     double subtotal = double.parse(basket["basket"]["subtotal"]);
-    return subtotal + 20;
+    return subtotal + fees;
   }
 
   static Future<List<dynamic>> getCheckOutDetails() async {
@@ -224,6 +251,11 @@ class OtherFunctions {
         .collection("users")
         .doc(user!.uid)
         .get();
+    final appData = await FirebaseFirestore.instance
+        .collection("settings")
+        .doc("App Settings")
+        .get();
+    final deliveryFee = appData.get("delivery fees");
     final userData = doc.data();
     final Map<String, dynamic> basket = userData!["basket"];
     final items = basket.values;
@@ -236,7 +268,8 @@ class OtherFunctions {
       itemQuantity,
       basket["subtotal"],
       basketItems.length,
-      "₹20.00",
+      deliveryFee,
+      baskets,
     ];
   }
 
@@ -283,8 +316,43 @@ class OtherFunctions {
     return address;
   }
 
-  static Future<void> placeOrder() async {
-    // TODO: Add this functions to write to firbase
-    // TODO: Add voucher feature
+  static Future<bool> placeOrder({
+    required String location,
+    required BuildContext context,
+    required String total,
+    required String userId,
+    required Map<String, dynamic> items,
+  }) async {
+    try {
+      await FirebaseFirestore.instance.collection("orders").add(
+        {
+          "date":
+              "${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}",
+          "items": items,
+          "location": location,
+          "status": "Pending",
+          "total": total,
+          "userId": userId,
+          "time": Timestamp.now(),
+        },
+      );
+      await FirebaseFirestore.instance.collection("users").doc(userId).update(
+        {
+          "basket": {"basketItems": {}, "subtotal": "0"},
+        },
+      );
+      return true;
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Something went wrong, please try again",
+            textScaleFactor: 1,
+          ),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return false;
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../functions/other_functions.dart';
@@ -18,11 +19,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   bool isAddressSet = false;
   bool isConfirm = false;
   bool loading = false;
+  bool isPlaced = false;
 
   @override
   void initState() {
     super.initState();
     data = OtherFunctions.getCheckOutDetails();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    locationController.dispose();
   }
 
   @override
@@ -36,41 +44,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           style: Theme.of(context).textTheme.headline5!.copyWith(
                 color: Colors.white,
               ),
-        ),
-      ),
-      extendBody: false,
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                FocusScope.of(context).unfocus();
-                if (!isConfirm) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        "Please confirm your delivery address",
-                        textScaleFactor: 1,
-                      ),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                  return;
-                }
-                Navigator.of(context).pushNamed(OrderConfirmScreen.routeName);
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                ),
-              ),
-              child: const Text(
-                "Place Order",
-                textScaleFactor: 1,
-              ),
-            ),
-          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -285,7 +258,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               textScaleFactor: 1,
                             ),
                           ),
-                        if (isAddressSet && isConfirm && !loading)
+                        if (isAddressSet && isConfirm && !loading && !isPlaced)
                           ElevatedButton(
                             onPressed: () {
                               setState(() {
@@ -300,6 +273,62 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  if (isPlaced)
+                    const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  if (!isPlaced)
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          FocusScope.of(context).unfocus();
+                          if (!isConfirm) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "Please confirm your delivery address",
+                                  textScaleFactor: 1,
+                                ),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            return;
+                          }
+                          setState(() {
+                            isPlaced = true;
+                          });
+                          await OtherFunctions.placeOrder(
+                            location: locationController.text.trim(),
+                            context: context,
+                            total: snapshot.data![0],
+                            userId: FirebaseAuth.instance.currentUser!.uid,
+                            items: snapshot.data![6],
+                          ).then(
+                            (value) {
+                              setState(() {
+                                isPlaced = false;
+                              });
+                              if (value) {
+                                Navigator.of(context)
+                                    .pushNamed(OrderConfirmScreen.routeName);
+                              }
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 30,
+                          ),
+                        ),
+                        child: const Text(
+                          "Place Order",
+                          textScaleFactor: 1,
+                        ),
+                      ),
+                    ),
                 ],
               );
             },

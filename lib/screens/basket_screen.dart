@@ -26,42 +26,12 @@ class BasketScreen extends StatelessWidget {
               ),
         ),
       ),
-      extendBody: false,
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                await OtherFunctions.getTotal().then(
-                  (value) {
-                    if (value >= 150) {
-                      Navigator.of(context).pushNamed(CheckoutScreen.routeName);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Minimum total value must be ₹150.",
-                            textScaleFactor: 1,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                ),
-              ),
-              child: const Text(
-                "Go to Checkout",
-                textScaleFactor: 1,
-              ),
-            ),
-          ],
-        ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Icon(Icons.arrow_back),
       ),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
@@ -98,14 +68,25 @@ class BasketScreen extends StatelessWidget {
                           child: CircularProgressIndicator.adaptive(),
                         );
                       }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return BasketItemTile(item: snapshot.data![index]);
-                        },
-                        itemCount: snapshot.data!.length,
-                      );
+                      return snapshot.data!.isEmpty
+                          ? Center(
+                              child: Text(
+                                "No Items in basket",
+                                textScaleFactor: 1,
+                                style: Theme.of(context).textTheme.headline4,
+                                textAlign: TextAlign.center,
+                                softWrap: true,
+                              ),
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return BasketItemTile(
+                                    item: snapshot.data![index]);
+                              },
+                              itemCount: snapshot.data!.length,
+                            );
                     },
                   );
                 },
@@ -190,10 +171,23 @@ class BasketScreen extends StatelessWidget {
                                   textScaleFactor: 1,
                                   style: Theme.of(context).textTheme.headline5,
                                 ),
-                                Text(
-                                  "₹20",
-                                  textScaleFactor: 1,
-                                  style: Theme.of(context).textTheme.headline5,
+                                StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection("settings")
+                                      .doc("App Settings")
+                                      .snapshots(),
+                                  builder: (context, feeSnapshot) {
+                                    if (feeSnapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Container();
+                                    }
+                                    return Text(
+                                      "₹${feeSnapshot.data!.data()!["delivery fees"]}",
+                                      textScaleFactor: 1,
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -236,6 +230,52 @@ class BasketScreen extends StatelessWidget {
                           ),
                         ],
                       ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("settings")
+                    .doc("App Settings")
+                    .snapshots(),
+                builder: (context, feeSnapshot) {
+                  if (feeSnapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator.adaptive();
+                  }
+                  return ElevatedButton(
+                    onPressed: () async {
+                      await OtherFunctions.getTotal().then(
+                        (value) {
+                          if (value >=
+                              double.parse(feeSnapshot.data!
+                                  .data()!["minimum amount"])) {
+                            Navigator.of(context)
+                                .pushNamed(CheckoutScreen.routeName);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Minimum total amount must be ₹${feeSnapshot.data!.data()!["minimum amount"]}",
+                                  textScaleFactor: 1,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                      ),
+                    ),
+                    child: const Text(
+                      "Go to Checkout",
+                      textScaleFactor: 1,
                     ),
                   );
                 },

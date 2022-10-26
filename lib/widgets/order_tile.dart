@@ -24,10 +24,28 @@ class OrderTile extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(5),
-            child: Text(
-              "Date: ${order["date"]}",
-              textScaleFactor: 1,
-              style: Theme.of(context).textTheme.headline5,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.calendar_month),
+                Text(
+                  order["date"],
+                  textScaleFactor: 1,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+                const Spacer(),
+                Text(
+                  order["status"],
+                  textScaleFactor: 1,
+                  style: Theme.of(context).textTheme.headline5!.copyWith(
+                        color: order["status"] == "Pending"
+                            ? Theme.of(context).colorScheme.primary
+                            : order["status"] == "Delivered"
+                                ? Colors.green
+                                : Colors.black,
+                      ),
+                ),
+              ],
             ),
           ),
           Padding(

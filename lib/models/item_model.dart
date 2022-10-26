@@ -7,6 +7,8 @@ class Item {
   final double price;
   final String imageUrl;
   final String description;
+  final bool isVeg;
+  final bool instock;
 
   const Item({
     required this.id,
@@ -14,6 +16,8 @@ class Item {
     required this.category,
     required this.price,
     required this.description,
+    required this.isVeg,
+    required this.instock,
     this.imageUrl = "",
   });
 
@@ -25,6 +29,8 @@ class Item {
       price: double.parse(snapshot["price"]),
       imageUrl: snapshot["imageUrl"],
       description: snapshot["description"],
+      isVeg: snapshot["isVeg"],
+      instock: snapshot["in stock"],
     );
   }
 }

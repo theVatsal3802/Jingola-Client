@@ -32,6 +32,12 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     future = getName();
@@ -141,11 +147,14 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                                 });
                                 await OtherFunctions.updateUser(
                                   name: nameController.text.trim(),
-                                ).then((value) {
-                                  setState(() {
-                                    isLoading = !isLoading;
-                                  });
-                                });
+                                  context: context,
+                                ).then(
+                                  (value) {
+                                    setState(() {
+                                      isLoading = !isLoading;
+                                    });
+                                  },
+                                );
                               },
                               child: const Text(
                                 "Save Name",

@@ -78,7 +78,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
           Icons.arrow_back,
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -145,6 +145,57 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                     textScaleFactor: 1,
                     style: Theme.of(context).textTheme.headline4!.copyWith(
                           color: Theme.of(context).colorScheme.secondary,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                left: 30,
+                right: 30,
+                bottom: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Availablility",
+                    textScaleFactor: 1,
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                  Text(
+                    widget.item.instock ? "Available" : "Not Available",
+                    textScaleFactor: 1,
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          color:
+                              widget.item.instock ? Colors.green : Colors.red,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20,
+                left: 30,
+                right: 30,
+                bottom: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Type:",
+                    textScaleFactor: 1,
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                  Text(
+                    widget.item.isVeg ? "Veg" : "Non Veg",
+                    textScaleFactor: 1,
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          color: widget.item.isVeg ? Colors.green : Colors.red,
                         ),
                   ),
                 ],

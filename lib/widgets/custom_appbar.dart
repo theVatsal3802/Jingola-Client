@@ -14,34 +14,48 @@ class CustomAppBar extends StatefulWidget with PreferredSizeWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   final User? user = FirebaseAuth.instance.currentUser;
-  String name = "";
+  late Future<String> name;
 
-  Future<void> getName() async {
+  Future<String> getName() async {
     final doc = await FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
         .get();
-    setState(() {
-      name = "Welcome, ${doc["name"]}";
-    });
+    return "Welcome, ${doc["name"]}";
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getName();
+  void initState() {
+    super.initState();
+    name = getName();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        name,
-        textScaleFactor: 1,
-        style: Theme.of(context).textTheme.headline5!.copyWith(
-              color: Colors.white,
+    return FutureBuilder(
+      future: name,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return AppBar(
+            title: Text(
+              "Welcome",
+              textScaleFactor: 1,
+              style: Theme.of(context).textTheme.headline5!.copyWith(
+                    color: Colors.white,
+                  ),
             ),
-      ),
+          );
+        }
+        return AppBar(
+          title: Text(
+            snapshot.data!,
+            textScaleFactor: 1,
+            style: Theme.of(context).textTheme.headline5!.copyWith(
+                  color: Colors.white,
+                ),
+          ),
+        );
+      },
     );
   }
 }

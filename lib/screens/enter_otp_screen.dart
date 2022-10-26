@@ -97,6 +97,12 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    codeController.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _verfyPhone();
@@ -210,6 +216,9 @@ class _EnterOTPScreenState extends State<EnterOTPScreen> {
                                   bool valid =
                                       _formKey.currentState!.validate();
                                   if (!valid) {
+                                    setState(() {
+                                      isLoading = false;
+                                    });
                                     return;
                                   }
                                   _formKey.currentState!.save();
