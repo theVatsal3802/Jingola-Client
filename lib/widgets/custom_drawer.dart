@@ -6,6 +6,7 @@ import '../screens/my_account_screen.dart';
 import '../screens/auth_screen.dart';
 import '../screens/orders_screen.dart';
 import '../screens/basket_screen.dart';
+import '../screens/terms_screen.dart';
 import '../screens/contact_us_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -104,6 +105,22 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.contact_support),
             title: Text(
               "Contact Us",
+              textScaleFactor: 1,
+              style: Theme.of(context).textTheme.headline4!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+            ),
+          ),
+          const Divider(
+            color: Colors.grey,
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(TermsScreen.routeName);
+            },
+            leading: const Icon(Icons.rule),
+            title: Text(
+              "Terms and Conditions",
               textScaleFactor: 1,
               style: Theme.of(context).textTheme.headline4!.copyWith(
                     color: Theme.of(context).colorScheme.primary,

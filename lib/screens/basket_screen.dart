@@ -6,6 +6,7 @@ import 'package:jingola_client/screens/checkout_screen.dart';
 import '../functions/other_functions.dart';
 import '../widgets/basket_item_tile.dart';
 import '../widgets/custom_drawer.dart';
+import './voucher_screen.dart';
 
 class BasketScreen extends StatelessWidget {
   static const routeName = "/basket";
@@ -235,7 +236,85 @@ class BasketScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
+              ),
+              Container(
+                height: 125,
+                width: double.infinity,
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Do you have vouchers?",
+                          textScaleFactor: 1,
+                          style: Theme.of(context).textTheme.headline5,
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                        ),
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection("settings")
+                              .doc("App Settings")
+                              .snapshots(),
+                          builder: (context, feeSnapshot) {
+                            if (feeSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator.adaptive();
+                            }
+                            return TextButton(
+                              onPressed: () async {
+                                await OtherFunctions.getTotal().then(
+                                  (value) {
+                                    if (value >=
+                                        double.parse(feeSnapshot.data!
+                                            .data()!["minimum amount"])) {
+                                      Navigator.of(context)
+                                          .pushNamed(VoucherScreen.routeName);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "Minimum total amount must be ₹${feeSnapshot.data!.data()!["minimum amount"]} to be able to apply voucher",
+                                            textScaleFactor: 1,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 30,
+                                ),
+                              ),
+                              child: const Text(
+                                "Apply Voucher",
+                                textScaleFactor: 1,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    Image.asset(
+                      "assets/images/coupon.png",
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
               ),
               StreamBuilder(
                 stream: FirebaseFirestore.instance

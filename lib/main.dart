@@ -16,6 +16,7 @@ import './config/theme.dart';
 import './screens/contact_us_screen.dart';
 import './screens/my_account_screen.dart';
 import './screens/order_confirm_screen.dart';
+import './screens/terms_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         MyAccountScreen.routeName: (context) => const MyAccountScreen(),
         ContactUsScreen.routeName: (context) => const ContactUsScreen(),
         OrderConfirmScreen.routeName: (context) => const OrderConfirmScreen(),
+        TermsScreen.routeName: (context) => const TermsScreen(),
       },
     );
   }

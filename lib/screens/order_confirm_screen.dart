@@ -33,6 +33,14 @@ class OrderConfirmScreen extends StatelessWidget {
                     .copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const Spacer(),
+              Text(
+                "Payment will be cash on delivery or UPI on delivery only",
+                textScaleFactor: 1,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: Theme.of(context).textTheme.headline3,
+              ),
+              const Spacer(),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pushNamedAndRemoveUntil(

@@ -127,7 +127,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: Theme.of(context).textTheme.headline4,
                         ),
                         Text(
-                          "${snapshot.data![5]}",
+                          "₹${snapshot.data![5]}",
                           textScaleFactor: 1,
                           style: Theme.of(context).textTheme.headline4,
                         ),
