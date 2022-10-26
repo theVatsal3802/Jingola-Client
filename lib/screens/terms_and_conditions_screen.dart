@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/custom_drawer.dart';
+
 class TermsScreen extends StatelessWidget {
   static const routeName = "/terms";
   const TermsScreen({super.key});
@@ -8,6 +10,7 @@ class TermsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const CustomDrawer(),
       appBar: AppBar(
         title: Text(
           "Terms and Conditions",

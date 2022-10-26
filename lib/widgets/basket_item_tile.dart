@@ -37,10 +37,13 @@ class _BasketItemTileState extends State<BasketItemTile> {
         price: double.parse(
           widget.item["price"],
         ),
+      ).then(
+        (_) {
+          setState(() {
+            isZero = true;
+          });
+        },
       );
-      setState(() {
-        isZero = true;
-      });
     }
   }
 

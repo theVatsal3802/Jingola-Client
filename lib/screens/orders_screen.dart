@@ -34,7 +34,7 @@ class OrdersScreen extends StatelessWidget {
                 textScaleFactor: 1,
                 style: Theme.of(context)
                     .textTheme
-                    .headline4!
+                    .headline2!
                     .copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(
@@ -89,7 +89,7 @@ class OrdersScreen extends StatelessWidget {
                 textScaleFactor: 1,
                 style: Theme.of(context)
                     .textTheme
-                    .headline4!
+                    .headline2!
                     .copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(

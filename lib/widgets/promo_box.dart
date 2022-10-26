@@ -14,7 +14,10 @@ class PromoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed(VoucherScreen.routeName);
+        Navigator.of(context).pushNamed(
+          VoucherScreen.routeName,
+          arguments: false,
+        );
       },
       child: Stack(
         children: [

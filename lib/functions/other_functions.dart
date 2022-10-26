@@ -41,18 +41,6 @@ class OtherFunctions {
     );
   }
 
-  static Stream<List<Voucher>> getVouchers() {
-    return FirebaseFirestore.instance.collection("vouchers").snapshots().map(
-      (snapshot) {
-        return snapshot.docs
-            .map(
-              (docs) => Voucher.fromSnapshot(docs),
-            )
-            .toList();
-      },
-    );
-  }
-
   static List<List> getItemFromMap(Map<String, dynamic> items) {
     List a = List.from(items.keys);
     List b = List.from(items.values);
@@ -73,6 +61,7 @@ class OtherFunctions {
           "basket": {"basketItems": {}, "subtotal": "0"},
           "pastOrders": [],
           "vouchersUsed": [],
+          "inThisOrder": ""
         },
       );
     } catch (e) {
@@ -244,9 +233,11 @@ class OtherFunctions {
     return subtotal + fees;
   }
 
-  static Future<List<dynamic>> getCheckOutDetails() async {
+  static Future<List<dynamic>> getCheckOutDetails(
+      bool isApplied, Map<String, dynamic> voucher, bool isRemoving) async {
     User? user = FirebaseAuth.instance.currentUser;
-    double total = await getTotal();
+    double total = await getFinalTotal(
+        isApplied: isApplied, isRemoving: isRemoving, voucher: voucher);
     final doc = await FirebaseFirestore.instance
         .collection("users")
         .doc(user!.uid)
@@ -339,6 +330,9 @@ class OtherFunctions {
       await FirebaseFirestore.instance.collection("users").doc(userId).update(
         {
           "basket": {"basketItems": {}, "subtotal": "0"},
+          "inThisOrder": "",
+          "voucherApplied": false,
+          "value": "",
         },
       );
       return true;
@@ -354,5 +348,130 @@ class OtherFunctions {
       );
       return false;
     }
+  }
+
+  static Future<List<Map<String, dynamic>>> getVouchers() async {
+    final vouchers =
+        await FirebaseFirestore.instance.collection("vouchers").get();
+    final voucher = vouchers.docs.map(
+      (element) {
+        return Voucher.fromSnapshot(element);
+      },
+    );
+    final doc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    final List usedVouchers = doc.get("vouchersUsed");
+    List<Map<String, dynamic>> v = [];
+    for (var element in voucher) {
+      if (!usedVouchers.contains(element.code)) {
+        v.add(
+          {
+            "id": element.id,
+            "code": element.code,
+            "value": element.value,
+            "type": element.type,
+            "description": element.description,
+          },
+        );
+      }
+    }
+    return v;
+  }
+
+  static Future<double> getFinalTotal({
+    bool isApplied = false,
+    required bool isRemoving,
+    Map<String, dynamic> voucher = const {},
+  }) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    final basket = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get();
+    final fee = await FirebaseFirestore.instance
+        .collection("settings")
+        .doc("App Settings")
+        .get();
+    double fees = double.parse(
+      fee.get("delivery fees"),
+    );
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    double subtotal = double.parse(basket["basket"]["subtotal"]);
+    double total = subtotal + fees;
+    if (isApplied) {
+      double value;
+      if (voucher["type"] == "1") {
+        value = double.parse(voucher["value"]);
+        total = total - value;
+      } else {
+        value = total * (double.parse(voucher["value"]) / 100);
+        total = total - value;
+      }
+      await FirebaseFirestore.instance.collection("users").doc(uid).update(
+        {
+          "value": value.toStringAsFixed(2),
+        },
+      );
+    }
+    if (isRemoving) {
+      final doc =
+          await FirebaseFirestore.instance.collection("users").doc(uid).get();
+      final value = double.parse(doc.get("value"));
+      await FirebaseFirestore.instance.collection("users").doc(uid).update(
+        {
+          "value": "",
+        },
+      );
+      total = total + value;
+    }
+    return total;
+  }
+
+  static Future<bool> applyVoucher(
+    String id,
+    Map<String, dynamic> voucher,
+  ) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    final doc =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    final List used = doc.get("vouchersUsed");
+    used.add(voucher["code"]);
+    await FirebaseFirestore.instance.collection("users").doc(uid).update(
+      {
+        "inThisOrder": id,
+        "voucherApplied": true,
+        "vouchersUsed": used,
+      },
+    );
+    return true;
+  }
+
+  static Future<bool> removeVoucher(
+    Map<String, dynamic> voucher,
+  ) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    final doc =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    final List used = doc.get("vouchersUsed");
+    used.remove(voucher["code"]);
+    await FirebaseFirestore.instance.collection("users").doc(uid).update(
+      {
+        "voucherApplied": false,
+        "vouchersUsed": used,
+      },
+    );
+    return true;
+  }
+
+  static Future<bool> removeId() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    await FirebaseFirestore.instance.collection("users").doc(uid).update(
+      {
+        "inThisOrder": "",
+      },
+    );
+    return true;
   }
 }
