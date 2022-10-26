@@ -16,7 +16,7 @@ import './config/theme.dart';
 import './screens/contact_us_screen.dart';
 import './screens/my_account_screen.dart';
 import './screens/order_confirm_screen.dart';
-import './screens/terms_screen.dart';
+import 'screens/terms_and_conditions_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

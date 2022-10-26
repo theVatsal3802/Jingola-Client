@@ -6,7 +6,7 @@ import '../screens/my_account_screen.dart';
 import '../screens/auth_screen.dart';
 import '../screens/orders_screen.dart';
 import '../screens/basket_screen.dart';
-import '../screens/terms_screen.dart';
+import '../screens/terms_and_conditions_screen.dart';
 import '../screens/contact_us_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
