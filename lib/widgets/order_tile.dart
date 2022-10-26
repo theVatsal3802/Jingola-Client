@@ -50,6 +50,20 @@ class OrderTile extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(5),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.watch_later_outlined),
+                Text(
+                  order["orderTime"],
+                  textScaleFactor: 1,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5),
             child: Text(
               "Total amount: ₹${order["total"]}",
               textScaleFactor: 1,

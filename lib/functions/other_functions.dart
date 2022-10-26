@@ -325,6 +325,7 @@ class OtherFunctions {
           "total": total,
           "userId": userId,
           "time": Timestamp.now(),
+          "orderTime": "${DateTime.now().hour}:${DateTime.now().minute}"
         },
       );
       await FirebaseFirestore.instance.collection("users").doc(userId).update(

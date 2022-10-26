@@ -36,6 +36,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final result = doc.get("voucherApplied");
     final thisVoucher = doc.get("inThisOrder");
     voucher = thisVoucher;
+    final v = await FirebaseFirestore.instance
+        .collection("vouchers")
+        .doc(voucher)
+        .get();
+    final vouchers = v.data();
+    myData = OtherFunctions.getCheckOutDetails(result, vouchers!, false);
     return result;
   }
 
