@@ -39,7 +39,10 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context)
-                    .pushNamed(BasketScreen.routeName)
+                    .pushNamed(
+                  BasketScreen.routeName,
+                  arguments: true,
+                )
                     .then((value) {
                   setState(() {
                     visible = true;

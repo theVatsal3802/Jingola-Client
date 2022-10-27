@@ -15,6 +15,7 @@ class BasketScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool button = ModalRoute.of(context)!.settings.arguments as bool;
     return Scaffold(
       drawer: const CustomDrawer(),
       appBar: AppBar(
@@ -26,13 +27,16 @@ class BasketScreen extends StatelessWidget {
               ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Icon(Icons.arrow_back),
-      ),
+      floatingActionButtonLocation:
+          button ? FloatingActionButtonLocation.startFloat : null,
+      floatingActionButton: button
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Icon(Icons.arrow_back),
+            )
+          : null,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
         child: Padding(
@@ -294,8 +298,10 @@ class BasketScreen extends StatelessWidget {
                             ).then(
                               (value) {
                                 if (value) {
-                                  Navigator.of(context).pushReplacementNamed(
-                                      CheckoutScreen.routeName);
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                    CheckoutScreen.routeName,
+                                    (route) => false,
+                                  );
                                 } else {
                                   return;
                                 }

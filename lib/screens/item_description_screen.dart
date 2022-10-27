@@ -54,7 +54,10 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
           children: [
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(BasketScreen.routeName);
+                Navigator.of(context).pushNamed(
+                  BasketScreen.routeName,
+                  arguments: true,
+                );
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(

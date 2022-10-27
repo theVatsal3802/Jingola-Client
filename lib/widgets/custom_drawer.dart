@@ -82,8 +82,10 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(BasketScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(
+                BasketScreen.routeName,
+                arguments: false,
+              );
             },
             leading: const Icon(Icons.shopping_cart),
             title: Text(

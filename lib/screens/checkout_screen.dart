@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../functions/other_functions.dart';
 import './order_confirm_screen.dart';
 import './voucher_screen.dart';
+import './home_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   static const routeName = "/checkout";
@@ -24,6 +25,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   bool loading = false;
   bool isPlaced = false;
   bool isApplying = false;
+  bool goBack = true;
 
   late Future<bool> checkVouchers;
   String? voucher;
@@ -35,6 +37,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         .get();
     final result = doc.get("voucherApplied");
     final thisVoucher = doc.get("inThisOrder");
+    if (result) {
+      goBack = false;
+    } else {
+      goBack = true;
+    }
     voucher = thisVoucher;
     final v = await FirebaseFirestore.instance
         .collection("vouchers")
@@ -577,6 +584,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             child: const Text(
                               "Place Order",
                               textScaleFactor: 1,
+                            ),
+                          ),
+                        ),
+                      if (goBack)
+                        Center(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                HomeScreen.routeName,
+                                (route) => false,
+                              );
+                            },
+                            child: const Text(
+                              "CANCEL PLACING OF ORDER",
                             ),
                           ),
                         ),
