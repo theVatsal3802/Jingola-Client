@@ -39,12 +39,12 @@ class PromoBox extends StatelessWidget {
           ClipPath(
             clipper: PromoCustomClipper(),
             child: Container(
-              height: 100,
+              height: 110,
               width: MediaQuery.of(context).size.width * 0.7,
               margin: const EdgeInsets.only(right: 5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.secondary,
               ),
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -59,7 +59,7 @@ class PromoBox extends StatelessWidget {
                       voucher.code,
                       textScaleFactor: 1,
                       style: Theme.of(context).textTheme.headline4!.copyWith(
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                     ),
                     const SizedBox(
@@ -68,9 +68,14 @@ class PromoBox extends StatelessWidget {
                     Text(
                       voucher.description,
                       textScaleFactor: 1,
-                      style: Theme.of(context).textTheme.headline6!.copyWith(
-                            color: Colors.white,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Colors.black,
                           ),
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(
+                      height: 5,
                     ),
                   ],
                 ),

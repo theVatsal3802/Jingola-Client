@@ -15,20 +15,33 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Theme.of(context).colorScheme.secondary,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
       child: Column(
         children: [
           const SizedBox(
             height: 56,
           ),
-          Center(
-            child: Text(
-              "JINGOLA INDIA",
-              textScaleFactor: 1,
-              style: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, right: 10),
+                child: Image.asset(
+                  "assets/images/logo.png",
+                  height: 40,
+                  width: 40,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              Text(
+                "JINGOLA FOODS",
+                textScaleFactor: 1,
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+            ],
           ),
           ListTile(
             onTap: () {

@@ -8,6 +8,7 @@ import '../widgets/category_box.dart';
 import '../widgets/promo_box.dart';
 import '../models/voucher_model.dart';
 import '../widgets/custom_appbar.dart';
+import '../widgets/add_box.dart';
 import '../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -63,6 +64,52 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(
+                          height: 150,
+                          width: double.infinity,
+                          child: StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection("ads")
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                );
+                              }
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return AddBox(
+                                    imageUrl: snapshot.data!.docs[index]
+                                        ["imageUrl"],
+                                  );
+                                },
+                                itemCount: snapshot.data!.docs.length,
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Offers",
+                          textScaleFactor: 1,
+                          softWrap: true,
+                          textAlign: TextAlign.left,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         SizedBox(
                           height: 120,
                           width: double.infinity,

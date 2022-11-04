@@ -239,6 +239,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           .colorScheme
                                           .primary),
                             ),
+                            Text(
+                              "You can edit the address after auto determined by the system",
+                              textScaleFactor: 1,
+                              style: Theme.of(context).textTheme.bodyText1,
+                              textAlign: TextAlign.center,
+                            ),
                             const SizedBox(
                               height: 10,
                             ),

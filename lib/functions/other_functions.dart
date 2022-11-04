@@ -118,6 +118,7 @@ class OtherFunctions {
     double subtotal = double.parse(basket["basket"]["subtotal"]);
     subtotal = subtotal + price;
     Map<String, dynamic> basketItems = baskets!["basket"]["basketItems"];
+    
     final addItem = {
       itemName: itemQuantity.toString(),
     };
@@ -194,15 +195,24 @@ class OtherFunctions {
     List<Map<String, dynamic>> items = [];
     List<String> keys = basketItems.keys.toList();
     for (var name in keys) {
-      final item = await FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection("menu")
           .where(
             "name",
             isEqualTo: name,
           )
-          .get();
-      items.add(item.docs.first.data());
+          .get()
+          .then(
+        (item) {
+          if (item.docs.isNotEmpty) {
+            items.add(
+              item.docs.first.data(),
+            );
+          }
+        },
+      );
     }
+    getTotal();
     return items;
   }
 

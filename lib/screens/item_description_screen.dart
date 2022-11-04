@@ -169,7 +169,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
-                    widget.item.instock ? "Available" : "Not Available",
+                    widget.item.instock ? "In Stock" : "Out of Stock",
                     textScaleFactor: 1,
                     style: Theme.of(context).textTheme.headline4!.copyWith(
                           color:
@@ -206,7 +206,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
             ),
             if (isAdding || isRemoving)
               const CircularProgressIndicator.adaptive(),
-            if (!isAdding && !isRemoving)
+            if (!isAdding && !isRemoving && widget.item.instock)
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 30,
@@ -311,7 +311,7 @@ class _ItemDescriptionScreenState extends State<ItemDescriptionScreen> {
                   ],
                 ),
               ),
-            if (!isAdding && !isRemoving)
+            if (!isAdding && !isRemoving && widget.item.instock)
               ElevatedButton(
                 onPressed: () async {
                   setState(() {

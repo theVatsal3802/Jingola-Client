@@ -93,152 +93,154 @@ class _ItemBoxState extends State<ItemBox> {
                   ? const CircularProgressIndicator.adaptive()
                   : isRemoving
                       ? const CircularProgressIndicator.adaptive()
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () async {
-                                if (itemQuantity > 0) {
-                                  setState(() {
-                                    isRemoving = true;
-                                    itemQuantity--;
-                                  });
-                                  await OtherFunctions.removeFromBasket(
-                                    itemName: widget.item.name,
-                                    itemQuantity: itemQuantity,
-                                    price: widget.item.price,
-                                  ).then(
-                                    (_) {
+                      : widget.item.instock
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  onPressed: () async {
+                                    if (itemQuantity > 0) {
                                       setState(() {
-                                        isRemoving = false;
+                                        isRemoving = true;
+                                        itemQuantity--;
                                       });
+                                      await OtherFunctions.removeFromBasket(
+                                        itemName: widget.item.name,
+                                        itemQuantity: itemQuantity,
+                                        price: widget.item.price,
+                                      ).then(
+                                        (_) {
+                                          setState(() {
+                                            isRemoving = false;
+                                          });
+                                          ScaffoldMessenger.of(context)
+                                              .clearSnackBars();
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Item removed from Basket.",
+                                                textScaleFactor: 1,
+                                              ),
+                                              duration: Duration(seconds: 1),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    } else {
                                       ScaffoldMessenger.of(context)
                                           .clearSnackBars();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(
                                           content: Text(
-                                            "Item removed from Basket.",
+                                            "Please Add some items before removing.",
                                             textScaleFactor: 1,
                                           ),
                                           duration: Duration(seconds: 1),
                                         ),
                                       );
-                                    },
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        "Please Add some items before removing.",
-                                        textScaleFactor: 1,
-                                      ),
-                                      duration: Duration(seconds: 1),
-                                    ),
-                                  );
-                                }
-                              },
-                              icon: Icon(
-                                Icons.do_disturb_on,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                            Text(
-                              "$itemQuantity",
-                              textScaleFactor: 1,
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                            IconButton(
-                              onPressed: () async {
-                                setState(() {
-                                  isAdding = true;
-                                  itemQuantity++;
-                                });
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                await OtherFunctions.addToBasket(
-                                  itemName: widget.item.name,
-                                  itemQuantity: itemQuantity,
-                                  price: widget.item.price,
-                                ).then(
-                                  (_) {
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.do_disturb_on,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                Text(
+                                  "$itemQuantity",
+                                  textScaleFactor: 1,
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                                IconButton(
+                                  onPressed: () async {
                                     setState(() {
-                                      isAdding = false;
+                                      isAdding = true;
+                                      itemQuantity++;
                                     });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          "Item added to Basket.",
-                                          textScaleFactor: 1,
-                                        ),
-                                        duration: Duration(seconds: 1),
-                                      ),
+                                    ScaffoldMessenger.of(context)
+                                        .clearSnackBars();
+                                    await OtherFunctions.addToBasket(
+                                      itemName: widget.item.name,
+                                      itemQuantity: itemQuantity,
+                                      price: widget.item.price,
+                                    ).then(
+                                      (_) {
+                                        setState(() {
+                                          isAdding = false;
+                                        });
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "Item added to Basket.",
+                                              textScaleFactor: 1,
+                                            ),
+                                            duration: Duration(seconds: 1),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
-                                );
-                              },
-                              icon: Icon(
-                                Icons.add_circle,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                                  icon: Icon(
+                                    Icons.add_circle,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                if (widget.item.isVeg)
+                                  Image.asset(
+                                    "assets/images/veg.png",
+                                    height: 20,
+                                    width: 20,
+                                    fit: BoxFit.contain,
+                                  ),
+                                if (!widget.item.isVeg)
+                                  Image.asset(
+                                    "assets/images/nonVeg.png",
+                                    height: 20,
+                                    width: 20,
+                                    fit: BoxFit.contain,
+                                  ),
+                              ],
+                            )
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Out of Stock",
+                                  textScaleFactor: 1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(
+                                        color: Colors.red,
+                                      ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                if (widget.item.isVeg)
+                                  Image.asset(
+                                    "assets/images/veg.png",
+                                    height: 20,
+                                    width: 20,
+                                    fit: BoxFit.contain,
+                                  ),
+                                if (!widget.item.isVeg)
+                                  Image.asset(
+                                    "assets/images/nonVeg.png",
+                                    height: 20,
+                                    width: 20,
+                                    fit: BoxFit.contain,
+                                  ),
+                              ],
                             ),
-                          ],
-                        ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 10,
-                left: 30,
-                right: 30,
-                bottom: 10,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Type",
-                    textScaleFactor: 1,
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  Text(
-                    widget.item.isVeg ? "Veg" : "Non Veg",
-                    textScaleFactor: 1,
-                    style: Theme.of(context).textTheme.headline4!.copyWith(
-                          color:
-                              widget.item.instock ? Colors.green : Colors.red,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 10,
-                left: 30,
-                right: 30,
-                bottom: 10,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Availablility",
-                    textScaleFactor: 1,
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
-                  Text(
-                    widget.item.instock ? "Available" : "Not Available",
-                    textScaleFactor: 1,
-                    style: Theme.of(context).textTheme.headline4!.copyWith(
-                          color:
-                              widget.item.instock ? Colors.green : Colors.red,
-                        ),
-                  ),
-                ],
-              ),
             ),
           ],
         ),

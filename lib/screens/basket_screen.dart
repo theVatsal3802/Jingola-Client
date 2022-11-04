@@ -66,31 +66,35 @@ class BasketScreen extends StatelessWidget {
                   }
                   return FutureBuilder(
                     future: OtherFunctions.getItemsfromItemName(user!.uid),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                    builder: (context, itemsnapshot) {
+                      if (itemsnapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator.adaptive(),
                         );
                       }
-                      return snapshot.data!.isEmpty
-                          ? Center(
-                              child: Text(
-                                "No Items in basket",
-                                textScaleFactor: 1,
-                                style: Theme.of(context).textTheme.headline4,
-                                textAlign: TextAlign.center,
-                                softWrap: true,
-                              ),
-                            )
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return BasketItemTile(
-                                    item: snapshot.data![index]);
-                              },
-                              itemCount: snapshot.data!.length,
-                            );
+                      return itemsnapshot.data == null
+                          ? Container()
+                          : itemsnapshot.data!.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    "No Items in basket",
+                                    textScaleFactor: 1,
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                  ),
+                                )
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return BasketItemTile(
+                                        item: itemsnapshot.data![index]);
+                                  },
+                                  itemCount: itemsnapshot.data!.length,
+                                );
                     },
                   );
                 },

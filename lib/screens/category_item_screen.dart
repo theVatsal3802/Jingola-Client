@@ -104,6 +104,7 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> {
                       )
                     : ListView.builder(
                         shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return ItemBox(
                             item: snapshot.data[index],
