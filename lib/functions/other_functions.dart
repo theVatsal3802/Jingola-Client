@@ -118,7 +118,6 @@ class OtherFunctions {
     double subtotal = double.parse(basket["basket"]["subtotal"]);
     subtotal = subtotal + price;
     Map<String, dynamic> basketItems = baskets!["basket"]["basketItems"];
-    
     final addItem = {
       itemName: itemQuantity.toString(),
     };
@@ -484,5 +483,42 @@ class OtherFunctions {
       },
     );
     return true;
+  }
+
+  static Future<void> loadBasket() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final doc =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    final basket = doc.data()!["basket"];
+    Map<String, dynamic> tempBasket = {};
+    double myTotal = 0;
+    final Map<String, dynamic> myBasket = basket["basketItems"];
+    final items = myBasket.keys;
+    for (var item in items) {
+      await FirebaseFirestore.instance
+          .collection("menu")
+          .where("name", isEqualTo: item)
+          .get()
+          .then(
+        (value) {
+          if (value.docs.isNotEmpty) {
+            final tempMap = {
+              item: myBasket[item],
+            };
+            tempBasket.addAll(tempMap);
+            myTotal += double.parse(value.docs.first.data()["price"]) *
+                double.parse(myBasket[item]);
+          }
+        },
+      );
+    }
+    await FirebaseFirestore.instance.collection("users").doc(uid).update(
+      {
+        "basket": {
+          "basketItems": tempBasket,
+          "subtotal": myTotal.toStringAsFixed(2),
+        }
+      },
+    );
   }
 }

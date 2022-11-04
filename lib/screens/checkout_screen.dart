@@ -593,20 +593,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                           ),
                         ),
-                      if (goBack)
-                        Center(
-                          child: OutlinedButton(
-                            onPressed: () {
+                      Center(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            if (goBack) {
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                 HomeScreen.routeName,
                                 (route) => false,
                               );
-                            },
-                            child: const Text(
-                              "CANCEL PLACING OF ORDER",
-                            ),
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    "Please remove voucher to be able to go back",
+                                    textScaleFactor: 1,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text(
+                            "CANCEL PLACING OF ORDER",
                           ),
                         ),
+                      ),
                     ],
                   );
                 },

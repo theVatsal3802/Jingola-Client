@@ -90,7 +90,7 @@ class _BasketItemTileState extends State<BasketItemTile> {
                 contentPadding: const EdgeInsets.only(
                   top: 5,
                   right: 10,
-                  left: 5,
+                  left: 20,
                   bottom: 5,
                 ),
                 leading: CircleAvatar(
