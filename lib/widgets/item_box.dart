@@ -87,7 +87,9 @@ class _ItemBoxState extends State<ItemBox> {
               subtitle: Text(
                 "₹${widget.item.price.toStringAsFixed(2)}",
                 textScaleFactor: 1,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.headline6!.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
               ),
               trailing: isAdding
                   ? const CircularProgressIndicator.adaptive()

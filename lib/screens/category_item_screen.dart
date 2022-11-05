@@ -62,26 +62,26 @@ class _CategoryItemScreenState extends State<CategoryItemScreen> {
           ],
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          setState(() {
-            visible = false;
-          });
-        },
-        displacement: 10,
-        triggerMode: RefreshIndicatorTriggerMode.anywhere,
+      body: SingleChildScrollView(
         child: Column(
           children: [
             if (visible)
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  "Some data might have changed since the last time you visited this page.\nPull to refresh!.",
-                  textScaleFactor: 1,
-                  style: TextStyle(
-                    fontSize: 14,
+              Container(
+                margin: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      visible = false;
+                    });
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text(
+                      "Some data Might have changed\nRefresh Page",
+                      textScaleFactor: 1,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             StreamBuilder(
