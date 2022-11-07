@@ -1,4 +1,4 @@
-package com.example.jingola_client
+package com.jingola.jingola_client
 
 import io.flutter.embedding.android.FlutterActivity
 
