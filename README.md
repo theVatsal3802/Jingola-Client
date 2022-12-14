@@ -1,16 +1,10 @@
-# jingola_client
+# Jingola Foos
 
-A new Flutter project.
+Food rdering app for the customers of Jingola Foods<br>
+The customers will be able to order food through this app. <br>
+The App has a backend on Firebase.<br>
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+1) The Customer can track order as the chefs and delivery boys update the order status in their respective apps.
+2) The Address is automatically detected with the location of the customer, but the customer can edit it as per his needs.
+3) The app also allows customers to apply coupons created by the Admin through his app.
