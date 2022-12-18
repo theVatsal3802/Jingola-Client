@@ -1,6 +1,6 @@
 # Jingola Foos
 
-Food rdering app for the customers of Jingola Foods<br>
+Food ordering app for the customers of Jingola Foods<br>
 The customers will be able to order food through this app. <br>
 The App has a backend on Firebase.<br>
 
